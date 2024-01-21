@@ -56,6 +56,18 @@ export class ApointementService extends AbstractService {
         `);
     }
 
+    getAllItem(code_entreprise, matricule) {
+        return this.dataSource.query(`
+            SELECT *
+            FROM apointements WHERE 
+            code_entreprise='${code_entreprise}' AND
+            matricule='${matricule}' AND
+            EXTRACT(MONTH FROM "date_entree" ::TIMESTAMP) = EXTRACT(MONTH FROM CURRENT_DATE ::TIMESTAMP) AND
+            EXTRACT(YEAR FROM "date_entree" ::TIMESTAMP) = EXTRACT(YEAR FROM CURRENT_DATE ::TIMESTAMP)
+            ORDER BY date_entree DESC;
+        `);
+    } 
+
     getLastItem(code_entreprise, matricule) {
         return this.dataSource.query(`
             SELECT *
