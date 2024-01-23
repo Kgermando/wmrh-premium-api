@@ -115,14 +115,15 @@ export class ApointementService extends AbstractService {
 
 
 
+    // ALL à la est utilisé dans le tableau de bord
     getItemsPAAAALL(code_entreprise) {
         return this.dataSource.query(`
             SELECT apointement, COUNT(*)
             FROM apointements WHERE 
             code_entreprise='${code_entreprise}' AND
-            EXTRACT(DAY FROM "created" ::TIMESTAMP) = EXTRACT(DAY FROM CURRENT_DATE ::TIMESTAMP) AND
-            EXTRACT(MONTH FROM "created" ::TIMESTAMP) = EXTRACT(MONTH FROM CURRENT_DATE ::TIMESTAMP) AND
-            EXTRACT(YEAR FROM "created" ::TIMESTAMP) = EXTRACT(YEAR FROM CURRENT_DATE ::TIMESTAMP)
+            EXTRACT(DAY FROM "date_entree" ::TIMESTAMP) = EXTRACT(DAY FROM CURRENT_DATE ::TIMESTAMP) AND
+            EXTRACT(MONTH FROM "date_entree" ::TIMESTAMP) = EXTRACT(MONTH FROM CURRENT_DATE ::TIMESTAMP) AND
+            EXTRACT(YEAR FROM "date_entree" ::TIMESTAMP) = EXTRACT(YEAR FROM CURRENT_DATE ::TIMESTAMP)
             GROUP BY apointement;
         `);
     }
@@ -132,14 +133,15 @@ export class ApointementService extends AbstractService {
             FROM apointements WHERE 
             code_entreprise='${code_entreprise}' AND
             site_location='${site_location}' AND 
-            EXTRACT(DAY FROM "created" ::TIMESTAMP) = EXTRACT(DAY FROM CURRENT_DATE ::TIMESTAMP) AND
-            EXTRACT(MONTH FROM "created" ::TIMESTAMP) = EXTRACT(MONTH FROM CURRENT_DATE ::TIMESTAMP) AND
-            EXTRACT(YEAR FROM "created" ::TIMESTAMP) = EXTRACT(YEAR FROM CURRENT_DATE ::TIMESTAMP)
+            EXTRACT(DAY FROM "date_entree" ::TIMESTAMP) = EXTRACT(DAY FROM CURRENT_DATE ::TIMESTAMP) AND
+            EXTRACT(MONTH FROM "date_entree" ::TIMESTAMP) = EXTRACT(MONTH FROM CURRENT_DATE ::TIMESTAMP) AND
+            EXTRACT(YEAR FROM "date_entree" ::TIMESTAMP) = EXTRACT(YEAR FROM CURRENT_DATE ::TIMESTAMP)
             GROUP BY apointement;
         `);
     }
 
 
+    // ALL à la est utilisé dans le tableau de bord
     getItemsCongEALL(code_entreprise) {
         return this.dataSource.query(`
             SELECT apointement, COUNT(*)

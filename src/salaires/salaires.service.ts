@@ -50,6 +50,8 @@ export class SalairesService extends AbstractService {
         })
     }
 
+    ////////////////////////////////////////////// CALCUL DES MONTANTS /////////////////////////////////////////////////////////////////
+
     netAPayerTotal(code_entreprise, month, year) {
         return this.dataSource.query(`
             SELECT COALESCE(SUM(cast(net_a_payer as decimal(20,2))), 0) as sum
@@ -374,11 +376,14 @@ export class SalairesService extends AbstractService {
     getJrPrestE(code_entreprise, matricule, date_paie) {
         return this.dataSource.query(`
             SELECT COALESCE(SUM(prestation ::FLOAT), 0) as presence
-            FROM apointements  WHERE 
-            code_entreprise='${code_entreprise}' AND
-            matricule='${matricule}'  AND
-            EXTRACT(MONTH FROM "created" ::TIMESTAMP) = EXTRACT(MONTH FROM '${date_paie}' ::TIMESTAMP) AND
-            EXTRACT(YEAR FROM "created" ::TIMESTAMP) = EXTRACT(YEAR FROM '${date_paie}' ::TIMESTAMP)
+            FROM apointements LEFT JOIN "personnels" ON "personnels"."id" = "apointements"."personnelId"
+            WHERE 
+            "apointements"."code_entreprise"='${code_entreprise}' AND
+            "apointements"."matricule"='${matricule}' AND 
+            "apointements"."date_entree"
+            BETWEEN
+            "personnels"."date_paie" ::TIMESTAMP AND
+            '${date_paie}' ::TIMESTAMP;
         `)
     }
 
