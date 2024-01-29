@@ -62,21 +62,6 @@ export default class DashAllService {
     }
 
 
-    // Finances
-
-    // Masse salarial 
-
-    async masseSalarialAll(code_entreprise, start_date, end_date) {
-        return this.dataSource.query(`
-            SELECT COALESCE(SUM(cast(net_a_payer as decimal(20,2))), 0) as net_a_payer
-            FROM salaires WHERE code_entreprise='${code_entreprise}' AND statut='Disponible' AND
-            created
-            BETWEEN
-            '${start_date}' ::TIMESTAMP AND
-            '${end_date}' ::TIMESTAMP;
-        `);
-    }
-
     // Progression de paie En attente, disponible et traitement 
 
     async statutPaieAll(code_entreprise, start_date, end_date) {
@@ -85,14 +70,30 @@ export default class DashAllService {
             FROM personnels
             WHERE code_entreprise='${code_entreprise}' AND
             "personnels"."is_delete"='false' AND
-            created
+            date_paie
             BETWEEN
             '${start_date}' ::TIMESTAMP AND
             '${end_date}' ::TIMESTAMP
             GROUP BY statut_paie; 
         `); 
-    } 
+    }
 
+        
+    // Finances
+
+    // Masse salarial 
+
+    async masseSalarialAll(code_entreprise, start_date, end_date) {
+        return this.dataSource.query(`
+            SELECT COALESCE(SUM(cast(net_a_payer as decimal(20,2))), 0) as net_a_payer
+            FROM salaires WHERE code_entreprise='${code_entreprise}' AND statut='Disponible' AND
+            date_paie
+            BETWEEN
+            '${start_date}' ::TIMESTAMP AND
+            '${end_date}' ::TIMESTAMP;
+        `);
+    }
+ 
 
     // Alocations logement, transport, famillial, soins medicaux 
     allocationALl(code_entreprise, start_date, end_date) {
@@ -104,7 +105,7 @@ export default class DashAllService {
             EXTRACT(MONTH FROM "date_paie" ::TIMESTAMP) as year_ans
             FROM salaires WHERE 
             code_entreprise='${code_entreprise}' AND statut='Disponible' AND
-            created
+            date_paie
             BETWEEN
             '${start_date}' ::TIMESTAMP AND
             '${end_date}' ::TIMESTAMP
@@ -119,7 +120,7 @@ export default class DashAllService {
         return this.dataSource.query(`
             SELECT COALESCE(SUM(cast(primes as decimal(20,2))), 0) as total
             FROM salaires WHERE code_entreprise='${code_entreprise}' AND statut='Disponible' AND
-            created
+            date_paie
             BETWEEN '${start_date}' ::TIMESTAMP AND
             '${end_date}' ::TIMESTAMP;
         `);
@@ -129,7 +130,7 @@ export default class DashAllService {
         return this.dataSource.query(`
             SELECT COALESCE(SUM(cast(prime_anciennete as decimal(20,2))), 0) as total
             FROM salaires WHERE code_entreprise='${code_entreprise}' AND statut='Disponible' AND
-            created
+            date_paie
             BETWEEN
             '${start_date}' ::TIMESTAMP AND
             '${end_date}' ::TIMESTAMP;
@@ -140,7 +141,7 @@ export default class DashAllService {
         return this.dataSource.query(`
             SELECT COALESCE(SUM(cast(penalites as decimal(20,2))), 0) as total
             FROM salaires WHERE code_entreprise='${code_entreprise}' AND statut='Disponible'  AND
-            created
+            date_paie
             BETWEEN
             '${start_date}' ::TIMESTAMP AND
             '${end_date}' ::TIMESTAMP;
@@ -151,7 +152,7 @@ export default class DashAllService {
         return this.dataSource.query(`
             SELECT COALESCE(SUM(cast(avance_slaire as decimal(20,2))), 0) as total
             FROM salaires WHERE code_entreprise='${code_entreprise}' AND statut='Disponible' AND
-            created
+            date_paie
             BETWEEN
             '${start_date}' ::TIMESTAMP AND
             '${end_date}' ::TIMESTAMP;
@@ -162,7 +163,7 @@ export default class DashAllService {
         return this.dataSource.query(`
             SELECT COALESCE(SUM(cast(pres_entreprise as decimal(20,2))), 0) as total
             FROM salaires WHERE code_entreprise='${code_entreprise}' AND statut='Disponible' AND
-            created
+            date_paie
             BETWEEN
             '${start_date}' ::TIMESTAMP AND
             '${end_date}' ::TIMESTAMP;
@@ -173,7 +174,7 @@ export default class DashAllService {
         return this.dataSource.query(`
             SELECT COALESCE(SUM(cast(heure_supplementaire_monnaie as decimal(20,2))), 0) as total
             FROM salaires WHERE code_entreprise='${code_entreprise}' AND statut='Disponible' AND
-            created
+            date_paie
             BETWEEN
             '${start_date}' ::TIMESTAMP AND
             '${end_date}' ::TIMESTAMP;
@@ -184,7 +185,7 @@ export default class DashAllService {
         return this.dataSource.query(`
             SELECT COALESCE(SUM(cast(syndicat as decimal(20,2))), 0) as total
             FROM salaires WHERE code_entreprise='${code_entreprise}' AND statut='Disponible' AND
-            created
+            date_paie
             BETWEEN
             '${start_date}' ::TIMESTAMP AND
             '${end_date}' ::TIMESTAMP;

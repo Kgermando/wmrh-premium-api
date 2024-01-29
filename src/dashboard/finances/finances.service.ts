@@ -13,7 +13,7 @@ export class FinancesService {
             SELECT COALESCE(SUM(cast(ipr as decimal(20,2))), 0) as total
             FROM salaires WHERE code_entreprise='${code_entreprise}' AND 
             statut='Disponible' AND
-            created
+            date_paie
             BETWEEN
             '${start_date}' ::TIMESTAMP AND
             '${end_date}' ::TIMESTAMP;
@@ -25,7 +25,7 @@ export class FinancesService {
             SELECT COALESCE(SUM(cast(cnss_qpo as decimal(20,2))), 0) as total
             FROM salaires WHERE code_entreprise='${code_entreprise}' AND 
             statut='Disponible' AND
-            created
+            date_paie
             BETWEEN
             '${start_date}' ::TIMESTAMP AND
             '${end_date}' ::TIMESTAMP;
@@ -37,7 +37,7 @@ export class FinancesService {
             SELECT COALESCE(SUM(cast(rbi as decimal(20,2))), 0) as total
             FROM salaires WHERE code_entreprise='${code_entreprise}' AND 
             statut='Disponible' AND
-            created
+            date_paie
             BETWEEN
             '${start_date}' ::TIMESTAMP AND
             '${end_date}' ::TIMESTAMP;
@@ -51,11 +51,11 @@ export class FinancesService {
                 SELECT SUM(cast(net_a_payer as decimal(20,2))) AS net_a_payer,  
                 SUM(cast(ipr as decimal(20,2))) AS ipr,
                 SUM(cast(cnss_qpo as decimal(20,2))) AS cnss_qpo, 
-                EXTRACT(MONTH FROM "created" ::TIMESTAMP) as month
+                EXTRACT(MONTH FROM "date_paie" ::TIMESTAMP) as month
                 FROM salaires WHERE 
                 code_entreprise='${code_entreprise}' AND  
                 statut='Disponible' AND
-                created
+                date_paie
                 BETWEEN
                 '${start_date}' ::TIMESTAMP AND
                 '${end_date}' ::TIMESTAMP

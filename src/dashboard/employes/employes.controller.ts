@@ -8,102 +8,80 @@ export class EmployesController {
     ) {}
 
    
-    @Get('enmployes-sexe-all/:code_entreprise/:start_date/:end_date')
+    @Get('enmployes-sexe-all/:code_entreprise')
     async getPieSexeAll(
       @Param('code_entreprise') code_entreprise: string,
-      @Param('start_date') start_date: string,
-      @Param('end_date') end_date: string
     ) {
-      return this.employesService.getPieSexeAll(code_entreprise, start_date, end_date);
+      return this.employesService.getPieSexeAll(code_entreprise);
     }
 
 
-    @Get('enmployes-departement-all/:code_entreprise/:start_date/:end_date')
+    @Get('enmployes-departement-all/:code_entreprise')
     async departementAll(
-      @Param('code_entreprise') code_entreprise: string,
-      @Param('start_date') start_date: string,
-      @Param('end_date') end_date: string
+      @Param('code_entreprise') code_entreprise: string, 
     ) {
-      return this.employesService.departementAll(code_entreprise, start_date, end_date);
+      return this.employesService.departementAll(code_entreprise);
     }
 
-    @Get('enmployes-syndicat-all/:code_entreprise/:start_date/:end_date')
+    @Get('enmployes-syndicat-all/:code_entreprise')
     async syndicatAll(
-      @Param('code_entreprise') code_entreprise: string,
-      @Param('start_date') start_date: string,
-      @Param('end_date') end_date: string
+      @Param('code_entreprise') code_entreprise: string, 
     ) {
-      return this.employesService.syndicatAll(code_entreprise, start_date, end_date);
+      return this.employesService.syndicatAll(code_entreprise);
     }
 
-    @Get('enmployes-site-location-all/:code_entreprise/:start_date/:end_date')
+    @Get('enmployes-site-location-all/:code_entreprise')
     async siteLocationAll(
-      @Param('code_entreprise') code_entreprise: string,
-      @Param('start_date') start_date: string,
-      @Param('end_date') end_date: string
+      @Param('code_entreprise') code_entreprise: string, 
     ) {
-      return this.employesService.siteLocationAll(code_entreprise, start_date, end_date);
+      return this.employesService.siteLocationAll(code_entreprise);
     }
 
-    @Get('enmployes-compte-actif-all/:code_entreprise/:start_date/:end_date')
+    @Get('enmployes-compte-actif-all/:code_entreprise')
     async compteActifAll(
-      @Param('code_entreprise') code_entreprise: string,
-      @Param('start_date') start_date: string,
-      @Param('end_date') end_date: string
+      @Param('code_entreprise') code_entreprise: string, 
     ) {
-      return this.employesService.compteActifAll(code_entreprise, start_date, end_date);
+      return this.employesService.compteActifAll(code_entreprise);
     }
 
 
 // Employés par departement, service, site de travail
-    @Get('enmployes-dep-all/:code_entreprise/:start_date/:end_date')
+    @Get('enmployes-dep-all/:code_entreprise')
     async employeDepartementAll(
-      @Param('code_entreprise') code_entreprise: string,
-      @Param('start_date') start_date: string,
-      @Param('end_date') end_date: string
+      @Param('code_entreprise') code_entreprise: string, 
     ) {
-      return this.employesService.employeDepartementAll(code_entreprise, start_date, end_date);
+      return this.employesService.employeDepartementAll(code_entreprise);
     }
 
-    @Get('enmployes-service-all/:code_entreprise/:start_date/:end_date')
+    @Get('enmployes-service-all/:code_entreprise')
     async employeServiceAll(
-      @Param('code_entreprise') code_entreprise: string,
-      @Param('start_date') start_date: string,
-      @Param('end_date') end_date: string
+      @Param('code_entreprise') code_entreprise: string, 
     ) {
-      return this.employesService.employeServiceAll(code_entreprise, start_date, end_date);
+      return this.employesService.employeServiceAll(code_entreprise);
     }
 
-    @Get('enmployes-site-travail-all/:code_entreprise/:start_date/:end_date')
+    @Get('enmployes-site-travail-all/:code_entreprise')
     async employeSiteLocationAll(
-      @Param('code_entreprise') code_entreprise: string,
-      @Param('start_date') start_date: string,
-      @Param('end_date') end_date: string
+      @Param('code_entreprise') code_entreprise: string, 
     ) {
-      return this.employesService.employeSiteLocationAll(code_entreprise, start_date, end_date);
+      return this.employesService.employeSiteLocationAll(code_entreprise);
     }
 
 
     // Age de contrat par employés
-    
-
-    @Get('enmployes-age-contrats-all/:code_entreprise/:start_date/:end_date')
+    @Get('enmployes-age-contrats-all/:code_entreprise')
     async ageContratEmployeAll(
-      @Param('code_entreprise') code_entreprise: string,
-      @Param('start_date') start_date: string,
-      @Param('end_date') end_date: string
+      @Param('code_entreprise') code_entreprise: string, 
     ) {
-      return this.employesService.ageContratEmployeAll(code_entreprise, start_date, end_date);
+      return this.employesService.ageContratEmployeAll(code_entreprise);
     }
 
 
     // Age des employés
-    @Get('enmployes-age-employes-all/:code_entreprise/:start_date/:end_date')
+    @Get('enmployes-age-employes-all/:code_entreprise')
     async ageEmployeAll(
-      @Param('code_entreprise') code_entreprise: string,
-      @Param('start_date') start_date: string,
-      @Param('end_date') end_date: string
+      @Param('code_entreprise') code_entreprise: string, 
     ) {
-      return this.employesService.ageEmployeAll(code_entreprise, start_date, end_date);
+      return this.employesService.ageEmployeAll(code_entreprise);
     }
 }

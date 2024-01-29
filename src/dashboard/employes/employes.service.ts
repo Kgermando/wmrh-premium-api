@@ -8,67 +8,45 @@ export class EmployesService {
         @InjectDataSource() private dataSource: DataSource,
     ) {} 
 
-    async getPieSexeAll(code_entreprise: string, start_date, end_date) {
+    async getPieSexeAll(code_entreprise: string) {
         return this.dataSource.query(`
             SELECT sexe, COUNT(sexe) 
             FROM personnels WHERE code_entreprise='${code_entreprise}' AND
             nom!='admin' AND
-            "personnels"."is_delete"='false' AND
-            created
-            BETWEEN
-            '${start_date}' ::TIMESTAMP AND
-            '${end_date}' ::TIMESTAMP
+            "personnels"."is_delete"='false'
             GROUP BY sexe;
         `);
     }
-
-
     
-    async departementAll(code_entreprise: string, start_date, end_date) {
+    async departementAll(code_entreprise: string) {
         return this.dataSource.query(`
         SELECT COUNT(*) 
-            FROM departements WHERE code_entreprise='${code_entreprise}' AND
-            created
-            BETWEEN
-            '${start_date}' ::TIMESTAMP AND
-            '${end_date}' ::TIMESTAMP;
+            FROM departements WHERE code_entreprise='${code_entreprise}';
         `);
     }
 
-    async syndicatAll(code_entreprise: string, start_date, end_date) {
+    async syndicatAll(code_entreprise: string) {
         return this.dataSource.query(`
         SELECT COUNT(*) 
             FROM personnels WHERE code_entreprise='${code_entreprise}' AND 
             "personnels"."is_delete"='false' AND
-            syndicat=true AND
-            created
-            BETWEEN
-            '${start_date}' ::TIMESTAMP AND
-            '${end_date}' ::TIMESTAMP;
+            syndicat=true;
         `);
     }
 
-    async siteLocationAll(code_entreprise: string, start_date, end_date) {
+    async siteLocationAll(code_entreprise: string) {
         return this.dataSource.query(`
         SELECT COUNT(*) 
-            FROM site_locations WHERE code_entreprise='${code_entreprise}' AND
-            created
-            BETWEEN
-            '${start_date}' ::TIMESTAMP AND
-            '${end_date}' ::TIMESTAMP;
+            FROM site_locations WHERE code_entreprise='${code_entreprise}';
         `);
     }
 
-    async compteActifAll(code_entreprise: string, start_date, end_date) {
+    async compteActifAll(code_entreprise: string) {
         return this.dataSource.query(`
             SELECT COUNT(*) 
             FROM personnels WHERE code_entreprise='${code_entreprise}' AND  
             statut_personnel=true AND
-            "personnels"."is_delete"='false' AND
-            created
-            BETWEEN
-            '${start_date}' ::TIMESTAMP AND
-            '${end_date}' ::TIMESTAMP;
+            "personnels"."is_delete"='false';
         `);
     }
 
@@ -76,54 +54,42 @@ export class EmployesService {
 
 
     // Employés par departement, Services, Site de travail
-    async employeDepartementAll(code_entreprise: string, start_date, end_date) {
+    async employeDepartementAll(code_entreprise: string) {
         return this.dataSource.query(`
             SELECT COALESCE("departement", LEFT('Non affecté', 40)) AS departement, COUNT(*)
             FROM personnels
             LEFT JOIN "departements" ON "departements"."id" = "personnels"."departementsId"
             WHERE "personnels"."code_entreprise"='${code_entreprise}' AND
-            "personnels"."is_delete"='false' AND
-            "personnels"."created"
-            BETWEEN
-            '${start_date}' ::TIMESTAMP AND
-            '${end_date}' ::TIMESTAMP
+            "personnels"."is_delete"='false'
             GROUP BY "departement";
         `);
     }
 
-    async employeServiceAll(code_entreprise: string, start_date, end_date) {
+    async employeServiceAll(code_entreprise: string) {
         return this.dataSource.query(`
             SELECT COALESCE("service", LEFT('Non affecté', 40)) AS service, COUNT(*)
             FROM personnels
             LEFT JOIN "serviceprefs" ON "serviceprefs"."id" = "personnels"."servicesId"
             WHERE "personnels"."code_entreprise"='${code_entreprise}' AND
-            "personnels"."is_delete"='false' AND
-            "personnels"."created"
-            BETWEEN
-            '${start_date}' ::TIMESTAMP AND
-            '${end_date}' ::TIMESTAMP
+            "personnels"."is_delete"='false'
             GROUP BY "service";
         `);
     }
 
-    async employeSiteLocationAll(code_entreprise: string, start_date, end_date) {
+    async employeSiteLocationAll(code_entreprise: string) {
         return this.dataSource.query(`
             SELECT COALESCE("site_location", LEFT('Non affecté', 40)) AS site_location, COUNT(*)
             FROM personnels
             LEFT JOIN "site_locations" ON "site_locations"."id" = "personnels"."siteLocationsId"
             WHERE "personnels"."code_entreprise"='${code_entreprise}' AND
-            "personnels"."is_delete"='false' AND
-            "personnels"."created"
-            BETWEEN
-            '${start_date}' ::TIMESTAMP AND
-            '${end_date}' ::TIMESTAMP
+            "personnels"."is_delete"='false'
             GROUP BY "site_location";
         `);
     }
 
 
     // Age de contrat par employés
-    async ageContratEmployeAll(code_entreprise: string, start_date, end_date) {
+    async ageContratEmployeAll(code_entreprise: string) {
         return this.dataSource.query(`
         SELECT
             COUNT(case when date_part('year', age(date_debut_contrat))>=0 AND date_part('year', age(date_debut_contrat))<=5 then 1 end) as "Moins de 5 ans",
@@ -133,17 +99,13 @@ export class EmployesService {
             COUNT(case when date_part('year', age(date_debut_contrat))>20 AND date_part('year', age(date_debut_contrat))<=25 then 1 end) as "Moins de 25 ans",
             COUNT(case when date_part('year', age(date_debut_contrat))>25 then 1 end) as "Plus de 25 ans"
             FROM personnels WHERE code_entreprise='${code_entreprise}' AND
-            "personnels"."is_delete"='false' AND
-            created
-            BETWEEN
-            '${start_date}' ::TIMESTAMP AND
-            '${end_date}' ::TIMESTAMP;
+            "personnels"."is_delete"='false';
         `);
     }
 
 
     // Age des employés
-    async ageEmployeAll(code_entreprise: string, start_date, end_date) {
+    async ageEmployeAll(code_entreprise: string) {
         return this.dataSource.query(`
             SELECT
                 COUNT(case when date_part('year', age(date_naissance))>=18 AND date_part('year', age(date_naissance))<=25 then 1 end) as "De 18-25 ans",
@@ -152,11 +114,7 @@ export class EmployesService {
                 COUNT(case when date_part('year', age(date_naissance))>45 AND date_part('year', age(date_naissance))<=55 then 1 end) as "De 45-55 ans", 
                 COUNT(case when date_part('year', age(date_naissance))>55 AND date_part('year', age(date_naissance))<=65 then 1 end) as "De 55-65 ans"
                 FROM personnels WHERE code_entreprise='${code_entreprise}' AND
-                "personnels"."is_delete"='false' AND
-                created
-                BETWEEN
-                '${start_date}' ::TIMESTAMP AND
-                '${end_date}' ::TIMESTAMP;
+                "personnels"."is_delete"='false';
         `);
     }
 
