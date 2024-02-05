@@ -244,15 +244,14 @@ export class PersonnelController {
   async update(
     @Param('id') id: number,
     @Body() body: PersonnelUpdateDto
-  ) { 
-
+  ) {
     const update_created = new Date();
     await this.personneService.update(id, {...body, update_created});   
     return this.personneService.findGetOne({id});
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number) {
-      return this.personneService.delete(id);
+  async delete(@Param('id') id: number) { 
+    return this.personneService.delete(id);
   }
 }

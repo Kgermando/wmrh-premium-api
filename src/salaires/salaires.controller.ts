@@ -439,7 +439,7 @@ export class SalairesController {
     }
 
     @Delete(':id')
-    async delete(@Param('id') id: number) {
+    async delete(@Param('id') id: number) { 
         return this.salaireService.delete(id);
     }
 

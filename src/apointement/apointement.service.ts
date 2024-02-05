@@ -41,8 +41,65 @@ export class ApointementService extends AbstractService {
             order: {'date_entree': 'DESC'}
         });
     }
+
+    calendar() {
+        return this.dataSource.query(`
+            CREATE TABLE calendrier (
+                date DATE PRIMARY KEY
+            );
+            INSERT INTO calendrier (date)
+            SELECT generate_series('2024-01-01'::date, '2024-01-31'::date, '1 day'::interval);
+            INSERT INTO calendrier (date)
+            SELECT generate_series('2024-02-01'::date, '2024-02-29'::date, '1 day'::interval);
+            INSERT INTO calendrier (date)
+            SELECT generate_series('2024-03-01'::date, '2024-03-31'::date, '1 day'::interval);
+            INSERT INTO calendrier (date)
+            SELECT generate_series('2024-04-01'::date, '2024-04-30'::date, '1 day'::interval);
+            INSERT INTO calendrier (date)
+            SELECT generate_series('2024-05-01'::date, '2024-05-31'::date, '1 day'::interval);
+            INSERT INTO calendrier (date)
+            SELECT generate_series('2024-06-01'::date, '2024-06-30'::date, '1 day'::interval);
+            INSERT INTO calendrier (date)
+            SELECT generate_series('2024-07-01'::date, '2024-07-31'::date, '1 day'::interval);
+            INSERT INTO calendrier (date)
+            SELECT generate_series('2024-08-01'::date, '2024-08-31'::date, '1 day'::interval);
+            INSERT INTO calendrier (date)
+            SELECT generate_series('2024-09-01'::date, '2024-09-30'::date, '1 day'::interval);
+            INSERT INTO calendrier (date)
+            SELECT generate_series('2024-10-01'::date, '2024-10-31'::date, '1 day'::interval);
+            INSERT INTO calendrier (date)
+            SELECT generate_series('2024-11-01'::date, '2024-11-30'::date, '1 day'::interval);
+            INSERT INTO calendrier (date)
+            SELECT generate_series('2024-12-01'::date, '2024-12-31'::date, '1 day'::interval);
+        `);
+    }
  
  
+    // Note: faire un pointage sur une grille
+    // SELECT c.date, p.matricule, p.apointement, p.prestation, p.date_entree, p.date_sortie
+    // FROM calendrier c
+    // LEFT JOIN apointements p
+    // ON c.date = p.date_entree
+    // WHERE EXTRACT(MONTH FROM "date" ::TIMESTAMP) = EXTRACT(MONTH FROM '${date_presence}' ::TIMESTAMP)
+    // ORDER BY c.date, p.matricule;
+
+    
+    registreMonth(code_entreprise, site_location, date_presence) {
+        return this.dataSource.query(`
+       
+
+
+
+            SELECT "apointements"."matricule", apointement, prestation, nom, prenom, date_entree
+            FROM apointements 
+            LEFT JOIN "personnels" ON "personnels"."id" = "apointements"."personnelId"
+            WHERE "apointements"."code_entreprise"='${code_entreprise}' AND 
+            site_location='${site_location}' AND
+            EXTRACT(MONTH FROM "date_entree" ::TIMESTAMP) = EXTRACT(MONTH FROM '${date_presence}' ::TIMESTAMP)
+            ORDER BY date_entree DESC;
+        `);
+    }
+
     registrePresence(code_entreprise, site_location, date_presence) {
         return this.dataSource.query(`
             SELECT *

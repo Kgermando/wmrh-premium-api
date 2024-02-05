@@ -48,6 +48,15 @@ export class ApointementController {
       return this.apointementService.getMatricule(code_entreprise, matricule);
     }
 
+    @Get('get-registre-month/:code_entreprise/:site_location/:date_presence') // Registre de presence par site de travail
+    async registreMonth(
+      @Param('code_entreprise') code_entreprise: string,
+      @Param('site_location') site_location: string,
+      @Param('date_presence') date_presence: string,
+    ) {
+      return this.apointementService.registreMonth(code_entreprise, site_location, date_presence);
+    }
+
     @Get('get-registre/:code_entreprise/:site_location/:date_presence') // Registre de presence par site de travail
     async getRegisterPresence(
       @Param('code_entreprise') code_entreprise: string,
