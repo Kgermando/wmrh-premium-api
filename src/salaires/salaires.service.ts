@@ -382,7 +382,7 @@ export class SalairesService extends AbstractService {
             "apointements"."matricule"='${matricule}' AND 
             "apointements"."date_entree"
             BETWEEN
-            "personnels"."date_paie" ::TIMESTAMP AND '${date_paie}' ::TIMESTAMP;
+            "personnels"."date_paie" ::TIMESTAMP AND '${date_paie}' ::TIMESTAMP - interval '1 day';
         `)
     }
 
