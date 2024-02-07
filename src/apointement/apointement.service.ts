@@ -124,7 +124,7 @@ export class ApointementService extends AbstractService {
             EXTRACT(YEAR FROM "date_entree" ::TIMESTAMP) = EXTRACT(YEAR FROM CURRENT_DATE ::TIMESTAMP)
             ORDER BY date_entree DESC;
         `);
-    } 
+    }
 
     getLastItem(code_entreprise, matricule) {
         return this.dataSource.query(`
