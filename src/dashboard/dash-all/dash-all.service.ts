@@ -69,7 +69,7 @@ export default class DashAllService {
         SELECT statut_paie, COUNT(statut_paie) 
             FROM personnels
             WHERE code_entreprise='${code_entreprise}' AND
-            "personnels"."is_delete"='false' AND
+            nom!='admin' AND  "personnels"."is_delete"='false' AND
             date_paie
             BETWEEN
             '${start_date}' ::TIMESTAMP AND
