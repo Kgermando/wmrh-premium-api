@@ -29,7 +29,7 @@ export class EmployesService {
         return this.dataSource.query(`
         SELECT COUNT(*) 
             FROM personnels WHERE code_entreprise='${code_entreprise}' AND 
-            "personnels"."is_delete"='false' AND
+            nom!='admin' AND "personnels"."is_delete"='false' AND
             syndicat=true;
         `);
     }
@@ -45,7 +45,7 @@ export class EmployesService {
         return this.dataSource.query(`
             SELECT COUNT(*) 
             FROM personnels WHERE code_entreprise='${code_entreprise}' AND  
-            statut_personnel=true AND
+            nom!='admin' AND statut_personnel='true' AND
             "personnels"."is_delete"='false';
         `);
     }
@@ -60,7 +60,7 @@ export class EmployesService {
             FROM personnels
             LEFT JOIN "departements" ON "departements"."id" = "personnels"."departementsId"
             WHERE "personnels"."code_entreprise"='${code_entreprise}' AND
-            "personnels"."is_delete"='false'
+            nom!='admin' AND "personnels"."is_delete"='false'
             GROUP BY "departement";
         `);
     }
@@ -71,7 +71,7 @@ export class EmployesService {
             FROM personnels
             LEFT JOIN "serviceprefs" ON "serviceprefs"."id" = "personnels"."servicesId"
             WHERE "personnels"."code_entreprise"='${code_entreprise}' AND
-            "personnels"."is_delete"='false'
+            nom!='admin' AND "personnels"."is_delete"='false'
             GROUP BY "service";
         `);
     }
@@ -82,7 +82,7 @@ export class EmployesService {
             FROM personnels
             LEFT JOIN "site_locations" ON "site_locations"."id" = "personnels"."siteLocationsId"
             WHERE "personnels"."code_entreprise"='${code_entreprise}' AND
-            "personnels"."is_delete"='false'
+            nom!='admin' AND "personnels"."is_delete"='false'
             GROUP BY "site_location";
         `);
     }
@@ -99,7 +99,7 @@ export class EmployesService {
             COUNT(case when date_part('year', age(date_debut_contrat))>20 AND date_part('year', age(date_debut_contrat))<=25 then 1 end) as "Moins de 25 ans",
             COUNT(case when date_part('year', age(date_debut_contrat))>25 then 1 end) as "Plus de 25 ans"
             FROM personnels WHERE code_entreprise='${code_entreprise}' AND
-            "personnels"."is_delete"='false';
+            nom!='admin' AND "personnels"."is_delete"='false';
         `);
     }
 
@@ -114,7 +114,7 @@ export class EmployesService {
                 COUNT(case when date_part('year', age(date_naissance))>45 AND date_part('year', age(date_naissance))<=55 then 1 end) as "De 45-55 ans", 
                 COUNT(case when date_part('year', age(date_naissance))>55 AND date_part('year', age(date_naissance))<=65 then 1 end) as "De 55-65 ans"
                 FROM personnels WHERE code_entreprise='${code_entreprise}' AND
-                "personnels"."is_delete"='false';
+                nom!='admin' AND "personnels"."is_delete"='false';
         `);
     }
 
