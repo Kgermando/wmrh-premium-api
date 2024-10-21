@@ -33,11 +33,14 @@ export class ApointementService extends AbstractService {
                 personnel: true
             }
         })
-    }
+    } 
 
-    getMatricule(code_entreprise, matricule): Promise<any[]> {
+    getMatricule(code_entreprise: string, matricule: string): Promise<any[]> {
         return this.repository.find({ 
-            where: {code_entreprise} && {matricule},
+            where: {
+                code_entreprise: code_entreprise,
+                matricule: matricule,
+            }, // {code_entreprise} && {matricule},
             order: {'date_entree': 'DESC'}
         });
     }
@@ -85,19 +88,26 @@ export class ApointementService extends AbstractService {
 
     
     registreMonth(code_entreprise, site_location, date_presence) {
-        return this.dataSource.query(`
-       
-
-
-
-            SELECT "apointements"."matricule", apointement, prestation, nom, prenom, date_entree
-            FROM apointements 
-            LEFT JOIN "personnels" ON "personnels"."id" = "apointements"."personnelId"
-            WHERE "apointements"."code_entreprise"='${code_entreprise}' AND 
-            site_location='${site_location}' AND
-            EXTRACT(MONTH FROM "date_entree" ::TIMESTAMP) = EXTRACT(MONTH FROM '${date_presence}' ::TIMESTAMP)
-            ORDER BY date_entree DESC;
-        `);
+        if(site_location == 'All') {
+            return this.dataSource.query(`
+                SELECT "apointements"."matricule", apointement, prestation, nom, prenom, date_entree
+                FROM apointements 
+                LEFT JOIN "personnels" ON "personnels"."id" = "apointements"."personnelId"
+                WHERE "apointements"."code_entreprise"='${code_entreprise}' AND 
+                EXTRACT(MONTH FROM "date_entree" ::TIMESTAMP) = EXTRACT(MONTH FROM '${date_presence}' ::TIMESTAMP)
+                ORDER BY date_entree DESC;
+            `); 
+        } else {
+            return this.dataSource.query(`
+                SELECT "apointements"."matricule", apointement, prestation, nom, prenom, date_entree
+                FROM apointements 
+                LEFT JOIN "personnels" ON "personnels"."id" = "apointements"."personnelId"
+                WHERE "apointements"."code_entreprise"='${code_entreprise}' AND 
+                site_location='${site_location}' AND
+                EXTRACT(MONTH FROM "date_entree" ::TIMESTAMP) = EXTRACT(MONTH FROM '${date_presence}' ::TIMESTAMP)
+                ORDER BY date_entree DESC;
+            `);
+        } 
     }
 
     registrePresence(code_entreprise, site_location, date_presence) {
