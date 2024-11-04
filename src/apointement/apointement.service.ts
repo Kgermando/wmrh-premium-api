@@ -123,7 +123,7 @@ export class ApointementService extends AbstractService {
         `);
     }
 
-    getAllItem(code_entreprise, matricule) {
+    getAllItem(code_entreprise, matricule) { 
         return this.dataSource.query(`
             SELECT *
             FROM apointements WHERE 

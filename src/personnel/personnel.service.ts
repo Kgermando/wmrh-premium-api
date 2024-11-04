@@ -4,16 +4,16 @@ import { AbstractService } from 'src/common/abstract.service';
 import { Personnel } from './models/personnel.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Workbook } from 'exceljs';
-import * as tmp  from 'tmp'; 
-import { PersonnelExcel } from './models/personnel_excel'; 
+import * as tmp from 'tmp';
+import { PersonnelExcel } from './models/personnel_excel';
 
 @Injectable()
 export class PersonnelService extends AbstractService {
     constructor(
-        @InjectRepository(Personnel) private readonly  personnelRepository: Repository<Personnel>,
+        @InjectRepository(Personnel) private readonly personnelRepository: Repository<Personnel>,
         @InjectDataSource() private dataSource: DataSource,
     ) {
-        super(personnelRepository); 
+        super(personnelRepository);
     }
 
     getWithSupport(): Promise<any[]> {
@@ -52,7 +52,7 @@ export class PersonnelService extends AbstractService {
         "personnels"."is_delete"='true';
     `);
     }
-    
+
 
     allGet(code_entreprise): Promise<any[]> {
         return this.dataSource.query(`
@@ -73,7 +73,7 @@ export class PersonnelService extends AbstractService {
         "personnels"."is_delete"='false' 
         ORDER BY "personnels"."created" DESC;
     `);
-        
+
     }
 
 
@@ -99,18 +99,32 @@ export class PersonnelService extends AbstractService {
     }
 
     allGetLocation(code_entreprise, site_locations): Promise<any[]> {
-        return this.dataSource.query(`
-        SELECT *
-        FROM personnels
-        LEFT JOIN "site_locations" ON "site_locations"."id" = "personnels"."siteLocationsId"
-        WHERE
-        "personnels"."code_entreprise"='${code_entreprise}' AND
-        "personnels"."is_delete"='false' AND
-        nom!='admin' AND
-        "site_locations"."site_location"='${site_locations}';
-    `);
+        if (site_locations == 'All') {
+            return this.dataSource.query(`
+                SELECT *
+                FROM personnels
+                LEFT JOIN "site_locations" ON "site_locations"."id" = "personnels"."siteLocationsId"
+                WHERE
+                "personnels"."code_entreprise"='${code_entreprise}' AND
+                "personnels"."is_delete"='false' AND
+                nom!='admin';
+            `);
+        } else {
+            return this.dataSource.query(`
+                SELECT *
+                FROM personnels
+                LEFT JOIN "site_locations" ON "site_locations"."id" = "personnels"."siteLocationsId"
+                WHERE
+                "personnels"."code_entreprise"='${code_entreprise}' AND
+                "personnels"."is_delete"='false' AND
+                nom!='admin' AND
+                "site_locations"."site_location"='${site_locations}';
+            `);
+        }
+
+
     }
-    
+
 
     // Mettre expandable panel dans profil avec certains de ces tables
     // Mais voir aussi comment aleger la table personnels en retirant les tables
@@ -148,16 +162,16 @@ export class PersonnelService extends AbstractService {
     }
 
     async paginate(page: number = 1, code_entreprise): Promise<any> {
-        const {data, meta} = await super.paginate(page, code_entreprise);
-        
+        const { data, meta } = await super.paginate(page, code_entreprise);
+
         return {
             data: data.map(personnel => {
-                const {password, ...data} = personnel;
+                const { password, ...data } = personnel;
                 return data;
             }),
             meta
         }
-    } 
+    }
 
     async presence(condition): Promise<any> {
         return await this.repository.findOne(condition);
@@ -166,8 +180,13 @@ export class PersonnelService extends AbstractService {
     getSyndicat(code_entreprise): Promise<any[]> {
         return this.repository.find(
             {
-                where: {code_entreprise} && {is_delete: false} && {syndicat: true}
-            }); 
+                where: {
+                    code_entreprise: code_entreprise,
+                    is_delete: false,
+                    syndicat: true
+                }, // where: {code_entreprise: code_entreprise} && {is_delete: false} && {syndicat: true}
+            }
+        );
     }
 
     // Tous les employés qui ont été payés il y a un mois
@@ -217,7 +236,7 @@ export class PersonnelService extends AbstractService {
             "personnels"."created"<='${end_date}';
         `);
 
-        if(!data) {
+        if (!data) {
             throw new NotFoundException("No data download");
         }
 
@@ -240,7 +259,7 @@ export class PersonnelService extends AbstractService {
             { header: 'Adresse', key: 'adresse', width: 30.5 },
             { header: 'Sexe', key: 'sexe', width: 20.5 },
             { header: 'Date de naissance', key: 'date_naissance', width: 25.5 },
-            { header: 'Lieu de naissance', key: 'lieu_naissance', width: 20.5 }, 
+            { header: 'Lieu de naissance', key: 'lieu_naissance', width: 20.5 },
             { header: 'Nationalité', key: 'nationalite', width: 20.5 },
             { header: 'État civile', key: 'etat_civile', width: 20.5 },
             { header: 'Nbre de dépendants', key: 'nbr_dependants', width: 20.5 },
@@ -277,17 +296,17 @@ export class PersonnelService extends AbstractService {
         this.styleSheet(sheet);
 
         let File = await new Promise((resolve, reject) => {
-            tmp.file({discardDescriptor: true, prefix: `myexcelsheet`, postfix: '.xlsx', mode: parseInt('0600', 8)},
+            tmp.file({ discardDescriptor: true, prefix: `myexcelsheet`, postfix: '.xlsx', mode: parseInt('0600', 8) },
                 async (err, file) => {
-                if(err) throw new BadRequestException(err); 
+                    if (err) throw new BadRequestException(err);
 
-                book.xlsx.writeFile(file).then(_ => {
-                    console.log('_', resolve(file));
-                    resolve(file)
-                }).catch(err => {
-                    throw new BadRequestException(err);
+                    book.xlsx.writeFile(file).then(_ => {
+                        console.log('_', resolve(file));
+                        resolve(file)
+                    }).catch(err => {
+                        throw new BadRequestException(err);
+                    });
                 });
-            });
         });
 
         return File;
@@ -308,7 +327,7 @@ export class PersonnelService extends AbstractService {
             LIMIT 2;
         `);
 
-        if(!data) {
+        if (!data) {
             throw new NotFoundException("No data download");
         }
 
@@ -330,7 +349,7 @@ export class PersonnelService extends AbstractService {
             { header: 'adresse', key: 'adresse', width: 30.5 },
             { header: 'sexe', key: 'sexe', width: 20.5 },
             { header: 'date_naissance', key: 'date_naissance', width: 20.5 },
-            { header: 'nationalite', key: 'nationalite', width: 30.5 }, 
+            { header: 'nationalite', key: 'nationalite', width: 30.5 },
             { header: 'etat_civile', key: 'etat_civile', width: 20.5 },
             { header: 'nbr_dependants', key: 'nbr_dependants', width: 20.5 },
             { header: 'matricule', key: 'matricule', width: 20.5 },
@@ -344,7 +363,7 @@ export class PersonnelService extends AbstractService {
             { header: 'fonctions', key: 'fonctions', width: 30.5 },
             { header: 'services', key: 'services', width: 30.5 },
             { header: 'site_locations', key: 'site_locations', width: 30.5 },
-            { header: 'type_contrat', key: 'type_contrat', width: 30.5 }, 
+            { header: 'type_contrat', key: 'type_contrat', width: 30.5 },
             { header: 'date_debut_contrat', key: 'date_debut_contrat', width: 20.5 },
             { header: 'date_fin_contrat', key: 'date_fin_contrat', width: 20.5 },
             { header: 'monnaie', key: 'monnaie', width: 20.5 },
@@ -353,7 +372,7 @@ export class PersonnelService extends AbstractService {
             { header: 'alloc_familliale', key: 'alloc_familliale', width: 20.5 },
             { header: 'soins_medicaux', key: 'soins_medicaux', width: 20.5 },
             { header: 'salaire_base', key: 'salaire_base', width: 20.5 },
-            { header: 'compte_bancaire', key: 'compte_bancaire', width: 30.5 }, 
+            { header: 'compte_bancaire', key: 'compte_bancaire', width: 30.5 },
             { header: 'nom_banque', key: 'nom_banque', width: 20.5 },
             { header: 'frais_bancaire', key: 'frais_bancaire', width: 20.5 },
         ]
@@ -364,17 +383,17 @@ export class PersonnelService extends AbstractService {
         this.styleSheet(sheet);
 
         let File = await new Promise((resolve, reject) => {
-            tmp.file({discardDescriptor: true, prefix: `myexcelsheet`, postfix: '.xlsx', mode: parseInt('0600', 8)},
+            tmp.file({ discardDescriptor: true, prefix: `myexcelsheet`, postfix: '.xlsx', mode: parseInt('0600', 8) },
                 async (err, file) => {
-                if(err) throw new BadRequestException(err); 
+                    if (err) throw new BadRequestException(err);
 
-                book.xlsx.writeFile(file).then(_ => {
-                    console.log('_', resolve(file));
-                    resolve(file)
-                }).catch(err => {
-                    throw new BadRequestException(err);
+                    book.xlsx.writeFile(file).then(_ => {
+                        console.log('_', resolve(file));
+                        resolve(file)
+                    }).catch(err => {
+                        throw new BadRequestException(err);
+                    });
                 });
-            });
         });
 
         return File;
@@ -388,26 +407,26 @@ export class PersonnelService extends AbstractService {
         sheet.getRow(1).height = 30.5;
 
         // Font color
-        sheet.getRow(1).font = { size: 11.5, bold: true, color: {argb: 'FFFFFF'}};
+        sheet.getRow(1).font = { size: 11.5, bold: true, color: { argb: 'FFFFFF' } };
 
         // Background color
-        sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', bgColor: {argb: '1E4C87'}, fgColor: { argb: '1E4C87'}};
+        sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', bgColor: { argb: '1E4C87' }, fgColor: { argb: '1E4C87' } };
 
         // Alignments
         sheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
 
         // Border
         sheet.getRow(1).border = {
-            top: { style: 'thin', color: { argb: '000000'}},
-            left: { style: 'thin', color: { argb: 'FFFFFF'}}, 
-            bottom: { style: 'thin', color: { argb: '000000'}},
-            right: { style: 'thin', color: { argb: 'FFFFFF'}}
+            top: { style: 'thin', color: { argb: '000000' } },
+            left: { style: 'thin', color: { argb: 'FFFFFF' } },
+            bottom: { style: 'thin', color: { argb: '000000' } },
+            right: { style: 'thin', color: { argb: 'FFFFFF' } }
         }
 
     }
-  
-  capitalizeTest(text: string): string {
-    return (text && text[0].toUpperCase() + text.slice(1).toLowerCase()) || text;
-  }
-    
+
+    capitalizeTest(text: string): string {
+        return (text && text[0].toUpperCase() + text.slice(1).toLowerCase()) || text;
+    }
+
 }

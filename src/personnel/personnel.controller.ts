@@ -42,7 +42,7 @@ export class PersonnelController {
     return this.personneService.getAllPerformance(code_entreprise);
   }
 
-  @Get('get-all/:code_entreprise/:site_locations')
+  @Get('get-all/:code_entreprise/:site_locations') 
   async getAllLocation(
     @Param('code_entreprise') code_entreprise: string,
     @Param('site_locations') site_locations: string,
